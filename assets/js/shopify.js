@@ -1,12 +1,16 @@
 /*
  * Small Shopify Storefront API client used by the shop.
  *
- *   FPShopify.loadCatalog()      → { prod1: { available, price, currency, sizes: { "Size 1": { id, available } } }, … }
+ *   FPShopify.loadCatalog()      → { prod1: { available, price, currency, title, description, materialCare, sizeFit,
+ *                                              collection, shippingNote, sizeOrder: ["Size 1", …],
+ *                                              sizes: { "Size 1": { id, available, price } } }, … }
  *   FPShopify.createCheckout(lines, lang) → checkoutUrl  (lines: [{ variantId, qty }])
  *   FPShopify.cartExists(cartId) → false once the cart has been turned into an order (or has expired)
  *
  * Products are matched to the site by their Shopify tag "prod1" … "prod13" (see shopify/shopify-products.csv),
- * sizes by the variant title ("Size 1", "Size 2", "Size 3", "One size").
+ * sizes by the variant title ("Size 1", "Size 2", "Size 3", "One size"; any title works, in Shopify's variant order).
+ * Texts come from the product description and these product metafields (definitions need Storefronts access):
+ *   custom.material_care, custom.size_fit (multi-line text), custom.collection, custom.shipping_note (single line).
  */
 (function () {
   var cfg = window.FP_SHOPIFY || {};
@@ -28,9 +32,25 @@
       });
   }
 
+  var META_KEYS = ["material_care", "size_fit", "collection", "shipping_note"];
   var CATALOG_Q =
     "query Catalog($after: String) { products(first: 100, after: $after) { pageInfo { hasNextPage endCursor } nodes {" +
-    " tags availableForSale variants(first: 20) { nodes { id title availableForSale price { amount currencyCode } } } } } }";
+    " tags title descriptionHtml availableForSale" +
+    " metafields(identifiers: [" + META_KEYS.map(function (k) { return '{namespace: "custom", key: "' + k + '"}'; }).join(", ") + "]) { key value }" +
+    " variants(first: 50) { nodes { id title availableForSale price { amount currencyCode } } } } } }";
+
+  // Description HTML -> plain text with paragraph breaks (the page shows it with white-space: pre-line).
+  function htmlToText(html) {
+    if (!html) return "";
+    var marked = String(html)
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/<li[^>]*>/gi, "• ")
+      .replace(/<\/li>/gi, "\n")
+      .replace(/<\/(p|div|h[1-6]|ul|ol|blockquote)>/gi, "\n\n");
+    var text = new DOMParser().parseFromString(marked, "text/html").body.textContent || "";
+    return text.split("\n").map(function (l) { return l.replace(/[ \t\u00a0]+/g, " ").trim(); }).join("\n")
+      .replace(/\n{3,}/g, "\n\n").trim();
+  }
 
   function loadCatalog() {
     var out = {};
@@ -39,13 +59,21 @@
         d.products.nodes.forEach(function (p) {
           var key = (p.tags || []).filter(function (t) { return /^prod\d+$/.test(t); })[0];
           if (!key) return;
-          var sizes = {}, min = null, cur = null;
+          var sizes = {}, order = [], min = null, cur = null;
           p.variants.nodes.forEach(function (v) {
-            sizes[v.title] = { id: v.id, available: !!v.availableForSale };
             var a = parseFloat(v.price.amount);
+            sizes[v.title] = { id: v.id, available: !!v.availableForSale, price: a };
+            order.push(v.title);
             if (min == null || a < min) { min = a; cur = v.price.currencyCode; }
           });
-          out[key] = { available: !!p.availableForSale, price: min, currency: cur, sizes: sizes };
+          var meta = {};
+          (p.metafields || []).forEach(function (m) { if (m && m.key) meta[m.key] = m.value || ""; });
+          out[key] = {
+            available: !!p.availableForSale, price: min, currency: cur, sizes: sizes, sizeOrder: order,
+            title: p.title || "", description: htmlToText(p.descriptionHtml),
+            materialCare: meta.material_care || "", sizeFit: meta.size_fit || "",
+            collection: meta.collection || "", shippingNote: meta.shipping_note || "",
+          };
         });
         if (d.products.pageInfo.hasNextPage) return page(d.products.pageInfo.endCursor);
         return out;

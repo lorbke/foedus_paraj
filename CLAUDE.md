@@ -39,10 +39,12 @@ Headless Chrome works: launch Chrome with `--remote-debugging-port` and drive it
 
 - Product list and order: the `products` (clothing, has sizes) and `accessories` (no sizes, "One size") arrays in
   `state` in `assets/js/pages/home.js`, keyed by slot `a-prodN`.
-- Display values: `_ov(p)` merges `content/products.json` (key `prodN`) over the `data-props` defaults in `index.html`
-  over the hard-coded state. **Price is then overridden by the live Shopify price** once the catalog has loaded.
-- Known content gap: `products.json` has a `description` only for `prod1`. All other products fall back to old
-  template placeholder text (e.g. the pencil skirt is described as "cashmere knit"). Real texts are pending from the owner.
+- Display values: `_ov(p)`. Once the Shopify catalog has loaded, **Shopify is the source for everything except images**:
+  title, price (per variant), sizes (variants in Shopify order), description (`descriptionHtml` → text), and product
+  metafields `custom.collection`, `custom.material_care`, `custom.size_fit`, `custom.shipping_note`. Empty values hide
+  their panel. Before load / if Shopify is down: `content/products.json` (names fall back further to `data-props` and
+  state; texts never fall back to the old template placeholders).
+- Known content gap: only `prod1` has a description and size & fit text; the others are pending from the owner.
 - Lookbook → product links: the `LOOK_PRODUCTS` map at the top of `home.js` (look slot → product slots, first one
   opens on image click). Unmapped looks are not clickable. Multi-product looks show links as hover chips on desktop
   (`data-look-overlay`) and as a row under the caption on phones (`data-look-shop`).
@@ -58,9 +60,9 @@ Headless Chrome works: launch Chrome with `--remote-debugging-port` and drive it
 - Shopify client: `assets/js/shopify.js` (`window.FPShopify`: `loadCatalog`, `createCheckout`, `cartExists`).
   Config: `assets/js/shopify-config.js` holds the store domain and the **public** Storefront token. The token is
   meant for browser code, so committing it is fine. **Never add the private/Admin token anywhere in this repo.**
-- Mapping site → Shopify: product tag `prodN` ↔ slot `a-prodN`; size string ↔ variant title
-  (`Size 1`/`Size 2`/`Size 3`/`One size`). SKUs follow `FP-P01-S2` / `FP-P10-OS`. A new product needs the tag in
-  Shopify **and** an entry in the `home.js` state.
+- Mapping site → Shopify: product tag `prodN` ↔ slot `a-prodN`; cart size string ↔ variant title (any title; a single
+  `One size`/`Default Title` variant means no size buttons). SKUs follow `FP-P01-S2` / `FP-P10-OS`. A new product needs
+  the tag in Shopify **and** an entry in the `home.js` state (list, order and images are still site-side).
 - Checkout: `cartCreate` (Storefront API, version in config) → redirect to `checkoutUrl`. Before redirecting, the site
   stores `{cartId, sig}` in `localStorage["fp-checkout"]`. On the next visit, if Shopify no longer returns that cart
   (it was converted to an order) **and** the bag is unchanged, the bag is cleared.
@@ -68,7 +70,8 @@ Headless Chrome works: launch Chrome with `--remote-debugging-port` and drive it
   re-checks against the catalog and blocks with a message if a line no longer maps to an available variant.
 - Language for checkout: `localStorage["fp-lang"]` (set by the DE/EN toggle on the legal pages), falling back to
   `navigator.language`; sent as `@inContext(language: DE|EN)`.
-- `shopify/shopify-products.csv` was the one-time product import (Shopify legacy CSV format), generated from the site data.
+- `shopify/products.csv` is the current product import (legacy CSV format + metafield columns), generated from live
+  Shopify data plus `products.json` texts. `shopify/shopify-products.csv` is the original import, superseded.
 
 ## Shopify store state (as of 2026-11-13)
 

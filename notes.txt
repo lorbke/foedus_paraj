@@ -11,6 +11,13 @@ Todos in Shopify Shop
 - Payments: set up Shopify Payments and/or PayPal.
 	- Test mode: turn on Shopify Payments test mode (or Shopify's "Bogus Gateway") so we can place test orders.
 		- at the top: see all other providers -> type "bogus gateway"
+- create product metafields in settings -> metafields -> use sidekick ai
+		| Name            | Namespace and key    | Type             |
+		|-----------------|----------------------|------------------|
+		| Collection      | custom.collection    | Single line text |
+		| Material & care | custom.material_care | Multi-line text  |
+		| Size & fit      | custom.size_fit      | Multi-line text  |
+		| Shipping note   | custom.shipping_note | Single line text |
 - import products
 - set products active
 - include products in headless channel

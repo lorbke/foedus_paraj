@@ -323,7 +323,9 @@ class Component extends DCLogic {
       const raw = this._productOf(l.slot);
       if (!raw) return null;
       const p = this._ov(raw);
-      const unit = this._priceNum(p.price), cur = this._currency(p.price);
+      const v = this._variantOf(l.slot, l.size), e = this._shop(l.slot);
+      const unit = v && v.price != null ? v.price : this._priceNum(p.price);
+      const cur = (v && e && e.currency) || this._currency(p.price);
       const src = this._srcOf(l.slot);
       const unavailable = !this._sizeAvailable(l.slot, l.size);
       return {
@@ -401,20 +403,40 @@ class Component extends DCLogic {
     return out;
   }
   _ui(k, d) { const u = ((this.state.texts || {})._ui) || {}; return u[k] != null && u[k] !== "" ? u[k] : d; }
+  /* Display values of a product. Once the Shopify catalog has loaded, Shopify is the source for every value except
+     images: title, price, description and the metafields (an empty value in Shopify hides that panel).
+     Before that, or if the product isn't in Shopify, the site's own values are used (content/products.json). */
   _ov(p) {
     const r = this._ovText(p);
     const e = this._shop(p.slot);
-    if (e && e.price != null) r.price = this._money(e.price, e.currency || "CHF");
+    if (!e) return r;
+    if (e.title) r.name = this._normName(e.title);
+    if (e.price != null) r.price = this._money(e.price, e.currency || "CHF");
+    r.description = e.description || "";
+    r.material = e.materialCare || "";
+    r.fit = e.sizeFit || "";
+    r.collection = e.collection || "";
+    r.shippingNote = e.shippingNote || "";
     return r;
   }
+  _normName(s) { return String(s || "").replace(/\s*[-–—]\s*/g, " ").replace(/\s+/g, " ").trim().toUpperCase(); }
+  // Fallback values (no Shopify). Texts only from content/products.json, never the old template placeholders.
   _ovText(p) {
     const k = p.slot.replace("a-", "");
     const pr = this.props;
     const t = (this.state.texts || {})[k] || {};
-    const N = (s) => String(s || "").replace(/\s*[-–—]\s*/g, " ").replace(/\s+/g, " ").trim().toUpperCase();
-    if (t.name || t.price || t.material || t.description != null || t.fit != null) return { ...p, fit: t.fit != null ? t.fit : p.fit, name: N(t.name || pr["name_" + k] || p.name), price: t.price || pr["price_" + k] || p.price, material: t.material || p.material, description: t.description != null ? t.description : (pr["text_" + k] || p.description) };
-    return { ...p, name: N(pr["name_" + k] || p.name), price: pr["price_" + k] || p.price, description: pr["text_" + k] || p.description };
+    return { ...p, name: this._normName(t.name || pr["name_" + k] || p.name), price: t.price || pr["price_" + k] || p.price,
+      description: t.description || "", material: t.material || "", fit: t.fit || "", collection: "", shippingNote: "" };
   }
+  _variantOf(slot, size) { const e = this._shop(slot); return e && e.sizes ? e.sizes[size] || null : null; }
+  // Sizes in Shopify's variant order; before the catalog loads: Size 1-3 for clothing, "One size" for accessories.
+  _sizeList(slot, group) {
+    const e = this._shop(slot);
+    if (e && e.sizeOrder && e.sizeOrder.length) return e.sizeOrder;
+    return group === "accessories" ? ["One size"] : ["Size 1", "Size 2", "Size 3"];
+  }
+  // A single "One size"/"Default Title" variant needs no size buttons.
+  _hasSizeChoice(list) { return list.length > 1 || !/^(one size|default title)$/i.test(list[0] || ""); }
   _vis(p) {
     const all = [0,1,2,3,4,5,6,7,8,9];
     const f = this.state.filled || {};
@@ -493,7 +515,13 @@ class Component extends DCLogic {
         open: () => { this._detailY = window.scrollY; this.setState({ detailIndex: i, detailGroup: "accessories", selectedSize: null, cartLabel: "Add to cart", openPanel: 0, imageIndex: 0 }); },
       })),
       lk: this._lookLinks(),
-      detail: this.state.detailIndex == null ? null : this._ov(this.state[this.state.detailGroup][this.state.detailIndex]),
+      detail: this.state.detailIndex == null ? null : (() => {
+        const cur = this.state[this.state.detailGroup][this.state.detailIndex];
+        const d = this._ov(cur);
+        const v = this._variantOf(cur.slot, this.state.selectedSize), e = this._shop(cur.slot);
+        if (v && v.price != null) d.price = this._money(v.price, (e && e.currency) || "CHF");
+        return d;
+      })(),
       detailImages: this.state.detailIndex == null ? [] : (() => {
         const p = this.state[this.state.detailGroup][this.state.detailIndex];
         const labels = ["Front", "Back", "Detail", "Fabric", "On the body", "Bild 6", "Bild 7", "Bild 8", "Bild 9", "Bild 10"];
@@ -532,7 +560,7 @@ class Component extends DCLogic {
           { title: this._ui("t_description", "Description"), tk: "t_description", body: p.description, field: "description" },
           { title: this._ui("t_material", "Material & care"), tk: "t_material", body: p.material, field: "material" },
           { title: this._ui("t_fit", "Size & fit"), tk: "t_fit", body: p.fit, field: "fit" },
-        ].filter((d) => !(this.state.detailGroup === "accessories" && d.field === "fit"));
+        ].filter((d) => String(d.body || "").trim() !== "");
         return defs.map((d, k) => ({
           title: d.title,
           body: d.body,
@@ -541,8 +569,9 @@ class Component extends DCLogic {
           toggle: () => this.setState({ openPanel: this.state.openPanel === k ? null : k }),
         }));
       })(),
-      hasSizes: this.state.detailGroup !== "accessories",
-      sizes: ["Size 1", "Size 2", "Size 3"].map((label) => {
+      hasSizes: this.state.detailIndex == null ? this.state.detailGroup !== "accessories"
+        : this._hasSizeChoice(this._sizeList(this.state[this.state.detailGroup][this.state.detailIndex].slot, this.state.detailGroup)),
+      sizes: (this.state.detailIndex == null ? [] : this._sizeList(this.state[this.state.detailGroup][this.state.detailIndex].slot, this.state.detailGroup)).map((label) => {
         const cur = this.state.detailIndex == null ? null : this.state[this.state.detailGroup][this.state.detailIndex];
         const ok = !cur || this._sizeAvailable(cur.slot, label);
         const active = ok && this.state.selectedSize === label;
@@ -570,11 +599,13 @@ class Component extends DCLogic {
       closeDetail: () => { const y = this._detailY; this.setState({ detailIndex: null, openPanel: 0 }, () => { if (y != null && Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y, behavior: "instant" }); }); },
       addToCart: () => {
         const cur = this.state[this.state.detailGroup][this.state.detailIndex];
-        const isAcc = this.state.detailGroup === "accessories";
         if (!cur || !this._productAvailable(cur.slot)) return;
-        if (isAcc && !this._sizeAvailable(cur.slot, "One size")) return;
-        if (!isAcc && !this.state.selectedSize) { this.setState({ cartLabel: "Select a size" }); setTimeout(() => this.setState({ cartLabel: "Add to cart" }), 1600); return; }
-        this._addLine(cur.slot, isAcc ? "One size" : this.state.selectedSize);
+        const list = this._sizeList(cur.slot, this.state.detailGroup);
+        const choose = this._hasSizeChoice(list);
+        const size = choose ? this.state.selectedSize : list[0];
+        if (choose && (!size || !list.includes(size))) { this.setState({ cartLabel: "Select a size" }); setTimeout(() => this.setState({ cartLabel: "Add to cart" }), 1600); return; }
+        if (!this._sizeAvailable(cur.slot, size)) return;
+        this._addLine(cur.slot, size);
         this.setState({ cartLabel: "Added ✓" });
         this._setCartOpen(true);
         setTimeout(() => this.setState({ cartLabel: "Add to cart" }), 2000);
@@ -590,9 +621,9 @@ class Component extends DCLogic {
       menuProducts: this.state.products.map((p, i) => ({ name: this._ov(p).name, go: (e) => { e.preventDefault(); this.setState({ navMenu: null, detailIndex: i, detailGroup: "products", selectedSize: null, cartLabel: "Add to cart", openPanel: 0, imageIndex: 0 }); } })),
       menuAccessories: this.state.accessories.map((p, i) => ({ name: this._ov(p).name, go: (e) => { e.preventDefault(); this.setState({ navMenu: null, detailIndex: i, detailGroup: "accessories", selectedSize: null, cartLabel: "Add to cart", openPanel: 0, imageIndex: 0 }); } })),
       ui: {
-        collection: this._ui("collection", "Collection No. 01"),
+        collection: (this.state.detailIndex != null && this._ov(this.state[this.state.detailGroup][this.state.detailIndex]).collection) || this._ui("collection", "Collection No. 01"),
         size: this._ui("size", "Size"),
-        shipping: this._ui("shipping", "Made to order in Switzerland · Ships in 3–4 weeks"),
+        shipping: (this.state.detailIndex != null && this._ov(this.state[this.state.detailGroup][this.state.detailIndex]).shippingNote) || this._ui("shipping", "Made to order in Switzerland · Ships in 3–4 weeks"),
       },
       ...this._lookLayout(),
       zoomOpen: !!this.state.zoomSrc,

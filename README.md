@@ -12,7 +12,7 @@ datenschutz.html        Privacy policy
 widerruf.html           Withdrawal form (opens a pre-filled email to contact@foedusparaj.com)
 
 content/                Texts and image settings. These files are what normally gets edited.
-  products.json           Product names, prices, description, material & care, size & fit
+  products.json           Fallback product texts, used only while Shopify hasn't loaded (Shopify is the source)
   page-texts.json         Edited texts of homepage / Maison / Lookbook
   impressum-texts.json    Impressum + AGB texts (DE/EN, stored as HTML)
   datenschutz-texts.json  Privacy policy texts (DE/EN, stored as HTML)
@@ -44,8 +44,10 @@ Upload the whole folder **except** `.env` and `shopify/` (those are only for set
 
 ## Editing content
 
-- **Product name / price / description:** edit `content/products.json`. Each product has a key (`prod1` … `prod13`).
-  Fields: `name`, `price`, `material`, `description`, `fit`. Line breaks inside text are written as `\n`.
+- **Product name / price / sizes / texts:** edit them **in Shopify** (see "Shop / Shopify" below). `content/products.json`
+  is only the fallback shown while Shopify loads or if it can't be reached (keys `prod1` … `prod13`, fields `name`,
+  `price`, `material`, `description`, `fit`; line breaks as `\n`). Keep it roughly in sync, or the page can briefly
+  show old values before Shopify's arrive.
 - **Replacing a photo:** put the new file in `assets/images/`, then in `content/images.json` change `"u"` of that slot
   to the new path. Set `"s": 1, "x": 0, "y": 0` to reset the crop.
   Slot ids: `a-prodN` = product main image, `a-prodN-vK` = extra gallery images, `a-lookN` = lookbook,
@@ -69,10 +71,14 @@ export without changing how anything looks.
   and is saved in the visitor's browser (`localStorage` key `fp-cart`). "Checkout" creates a Shopify cart and sends the
   visitor to Shopify's checkout; orders arrive in the Shopify admin.
   - Connection: `assets/js/shopify-config.js` (store domain + public Storefront token), client: `assets/js/shopify.js`.
-  - Products are matched by their Shopify tag `prod1` … `prod13`, sizes by variant name (`Size 1`–`Size 3`, `One size`).
-    A new product therefore needs that tag in Shopify **and** an entry on the site.
-  - **Prices shown on the site come from Shopify** (the `price` in `products.json` is only a fallback if Shopify can't be reached).
+  - Products are matched by their Shopify tag `prod1` … `prod13`. A new product needs that tag in Shopify **and** an entry
+    on the site (product list and images are still on the site).
+  - **Everything on the product page except images comes from Shopify:** title, price (per size), sizes (the variants, in
+    Shopify's order; a single "One size" variant shows no size buttons), description, and these product metafields:
+    `custom.collection` (label above the title), `custom.material_care`, `custom.size_fit`, `custom.shipping_note`.
+    An empty description/metafield hides that panel. The metafield definitions need **Storefronts access** turned on.
   - Sizes/products that Shopify marks unavailable are crossed out / shown as "Sold out".
+  - `shopify/products.csv` is the current product import (legacy Shopify CSV format, with the metafield columns).
   - After a finished order the bag empties itself the next time the visitor opens the site.
 - **Newsletter and waitlist forms** show "Thank you" but don't store the email anywhere (planned: Klaviyo or Mailchimp).
 - **Coming-soon page** is switched off. To switch it on, both of these are needed: `comingSoon: true` in the `state`
