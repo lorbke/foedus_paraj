@@ -1,6 +1,16 @@
 const CART_KEY = "fp-cart";
 const MAX_QTY = 10;
 const CHECKOUT_KEY = "fp-checkout";
+// <image-slot> (vendor) re-applies its saved crop when the image finishes loading, without clamping it to the
+// current frame. A crop saved for a wide desktop frame (e.g. the hero, shifted 38% down) is out of range in a
+// tall phone frame, so a late-loading image was pushed down and left a band under the header. Clamp first.
+customElements.whenDefined("image-slot").then(() => {
+  const P = customElements.get("image-slot").prototype;
+  if (P._fpClampPatched || typeof P._applyView !== "function" || typeof P._clampView !== "function") return;
+  const apply = P._applyView;
+  P._applyView = function () { try { this._clampView(); } catch (e) {} return apply.apply(this, arguments); };
+  P._fpClampPatched = true;
+});
 const PRODUCT_IMAGES = {"a-prod1":"assets/images/a-prod1.webp","a-prod2":"assets/images/a-prod2.webp","a-prod3":"assets/images/a-prod3-f.webp","a-prod4":"assets/images/a-prod4-f.webp","a-prod5":"assets/images/a-prod5-v1-1792601583101.webp","a-prod6":"assets/images/a-prod6-f.webp","a-prod7":"assets/images/a-prod7-f.webp","a-prod8":"assets/images/a-prod8-main.webp","a-prod9":"assets/images/a-prod9-f.webp","a-prod10":"assets/images/a-prod10-f.webp","a-prod11":"assets/images/a-prod11-f.webp"};
 
 class Component extends DCLogic {
@@ -553,7 +563,26 @@ class Component extends DCLogic {
       openZoom: (e) => { if (e) e.stopPropagation(); this._openZoom(); },
       galleryClick: (e) => {
         if (e && e.target && e.target.closest && e.target.closest("button")) return;
+        if (Date.now() - (this._swipedAt || 0) < 400) return;
         this._openZoom();
+      },
+      // Horizontal swipe on the product gallery (phones): left = next image, right = previous.
+      galleryTouchStart: (e) => {
+        const t = e.touches && e.touches[0];
+        this._swipe = t ? { x: t.clientX, y: t.clientY } : null;
+      },
+      galleryTouchEnd: (e) => {
+        const s = this._swipe; this._swipe = null;
+        const t = e.changedTouches && e.changedTouches[0];
+        if (!s || !t) return;
+        const dx = t.clientX - s.x, dy = t.clientY - s.y;
+        if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+        this._swipedAt = Date.now();
+        this.setState((st) => {
+          const p = st.detailIndex == null ? null : st[st.detailGroup][st.detailIndex];
+          const n = p ? this._vis(p).length : 10;
+          return { imageIndex: (st.imageIndex + (dx < 0 ? 1 : n - 1)) % n };
+        });
       },
       closeZoom: (e) => { if (e) e.stopPropagation(); this.setState({ zoomSrc: null, zoomIn: false }); },
       zoomToggle: (e) => {

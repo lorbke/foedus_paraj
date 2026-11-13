@@ -27,9 +27,11 @@ Headless Chrome works: launch Chrome with `--remote-debugging-port` and drive it
   - `{{ }}` works inside `style="…"` attributes and is used heavily for dynamic styling.
   - Build composite strings (e.g. `"Bag (2)"`) in JS rather than mixing text and `{{ }}` in the template.
 - **Do not edit `assets/js/vendor/`.**
-- Almost all styling is inline. Phone layout lives in one `@container atelier (max-width: 760px)` block in `index.html`,
-  and many of its rules match on **inline style substrings** (e.g. `div[style*="z-index:200"]`, `[style*="grid-template-columns:1.1fr"]`).
-  Changing an inline style string can silently break the phone layout, so grep the container block before editing styles.
+- Almost all styling is inline. Phone layout lives in one `@container atelier (max-width: 760px)` block in `index.html`;
+  the legal pages each have a `@media (max-width: 760px)` block. Phone rules target elements by tag, id or `data-*` hook
+  (`data-prod-grid`, `data-card-meta`, `data-detail-*`, `data-size-btn`, `data-mz-head`, `data-legal-pad`, …).
+  **Never match on inline-style substrings** (`[style*="z-index:200"]`): React re-serializes inline styles
+  (`z-index: 200`, `rgb(...)`), so such selectors silently match nothing. Add a `data-*` hook instead.
 - `home.js` has text/brand post-processing (`_setupPageTexts`, `_brandify`) that rewrites DOM text in some sections.
   Mark new UI with `data-*` attributes and keep it outside `#maison`, `#lookbook`, `#newsletter` and `#top` text nodes.
 
@@ -42,6 +44,8 @@ Headless Chrome works: launch Chrome with `--remote-debugging-port` and drive it
 - Known content gap: `products.json` has a `description` only for `prod1`. All other products fall back to old
   template placeholder text (e.g. the pencil skirt is described as "cashmere knit"). Real texts are pending from the owner.
 - Product thumbnails: the `PRODUCT_IMAGES` map at the top of `home.js`. Gallery images: `content/images.json`.
+- `images.json` crops (`s`/`x`/`y`) are saved for one frame shape and must be clamped for others. The vendor `<image-slot>`
+  skips that clamp on image load, so `home.js` patches `_applyView` to clamp first (top of file). Keep that patch.
 
 ## Cart and Shopify
 

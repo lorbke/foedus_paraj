@@ -30,19 +30,37 @@
   [data-cart-qty] button:focus-visible, [data-cart-btn]:focus-visible, [data-cart-link]:focus-visible{ outline:1px solid #16140F; outline-offset:3px; }
   [data-cart-link]{ background:none; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#7C766A; text-decoration:underline; text-underline-offset:3px; }
   image-slot{ display:block !important; width:100% !important; height:100% !important; }
+  /* #accessories has no top padding, so anchor jumps need an offset to clear the sticky header (matches #collection). */
+  #accessories{ scroll-margin-top:120px; }
+  /* Phone layout. Match elements by tag, id or data-* attribute, never by inline-style substring:
+     React re-serializes inline styles ("z-index:200" becomes "z-index: 200"), so [style*=...] never matches. */
   @container atelier (max-width: 760px) {
-    #collection > div[style*="grid-template-columns:repeat(3"]{ grid-template-columns:repeat(2,1fr) !important; gap:16px 16px !important; row-gap:40px !important; }
+    [data-prod-grid]{ grid-template-columns:repeat(2, minmax(0,1fr)) !important; gap:14px !important; row-gap:36px !important; }
+    [data-prod-grid] > article{ width:100% !important; }
+    [data-card-meta]{ flex-direction:column !important; gap:4px !important; margin-top:12px !important; }
+    [data-card-meta] h3{ font-size:13px !important; line-height:1.35 !important; }
+    [data-card-meta] span{ font-size:12px !important; }
     header{ padding:16px 20px !important; grid-template-columns:1fr !important; justify-content:center !important; }
     header a[href="#top"]{ font-size:12px !important; letter-spacing:.22em !important; text-align:center !important; }
     header nav[data-desktop-nav]{ display:none !important; }
     header button[data-menu-toggle]{ display:flex !important; }
     header button[data-cart-mobile]{ display:block !important; }
+    header button[data-menu-toggle], header button[data-cart-mobile]{ top:2px !important; transform:none !important; min-height:44px; }
+    header button[data-menu-toggle]{ justify-content:center; right:12px !important; padding:8px 8px !important; }
+    header button[data-cart-mobile]{ left:12px !important; padding:8px 8px !important; }
+    header nav[data-mobile-menu]{ gap:4px !important; padding-top:14px !important; padding-bottom:6px; }
+    header nav[data-mobile-menu] a{ padding:10px 16px; }
     #top{ padding:24px 20px 28px !important; }
     #top h1{ font-size:15vw !important; }
+    #top [data-hero-logo]{ font-size:min(28px, 7.8vw) !important; }
     #top p, #top p b, #top p u{ max-width:60% !important; font-size:11px !important; }
-    #collection, #lookbook, #maison, #newsletter{ padding-left:20px !important; padding-right:20px !important; }
-    #collection{ padding-top:70px !important; padding-bottom:60px !important; }
+    #collection, #accessories, #lookbook, #maison, #newsletter{ padding-left:20px !important; padding-right:20px !important; }
+    #collection{ padding-top:56px !important; padding-bottom:72px !important; }
+    #accessories{ padding-bottom:16px !important; scroll-margin-top:56px; }
+    #collection > div[data-reveal], #accessories > div[data-reveal]{ margin-bottom:32px !important; }
+    #lookbook > div[data-reveal]{ margin-bottom:40px !important; }
     #lookbook{ padding-top:70px !important; padding-bottom:70px !important; }
+    #lookbook [data-lookgrid], #lookbook figure[data-single]{ column-gap:0 !important; }
     #lookbook [data-lookgrid]{ row-gap:56px !important; }
     #lookbook [data-lookgrid] > figure{ grid-column:1 / -1 !important; margin-top:0 !important; }
     #lookbook figure[data-single] > *{ grid-column:1 / -1 !important; grid-row:auto !important; margin-left:0 !important; width:100% !important; }
@@ -51,22 +69,38 @@
     #maison [data-mz-grid]{ display:flex !important; flex-direction:column !important; gap:32px !important; }
     #maison [data-mz-grid] > *{ width:100% !important; }
     #maison [data-mz-cols]{ columns:1 !important; }
-    #maison h2[style*="clamp(38px"]{ margin:48px 0 56px !important; }
-    #maison div[style*="padding:56px 0"]{ margin:72px 0 !important; padding:36px 0 !important; }
-    #maison [data-mz-grid][style*="margin-top:120px"]{ margin-top:72px !important; }
-    #maison div[style*="margin:0 auto 120px"]{ margin-bottom:64px !important; }
-    #maison p[style*="clamp(22px"]{ font-size:22px !important; max-width:26ch !important; }
-    #maison div[style*="grid-template-columns:5fr"],
-    #maison div[style*="grid-template-columns:7fr"]{ grid-template-columns:1fr !important; gap:28px !important; }
-    #maison > div > div{ gap:80px !important; } #maison > div{ gap:80px !important; }
-    #maison h2[style*="letter-spacing:.28em"]{ margin-bottom:16px !important; }
-    #maison p[style*="clamp(18px"]{ font-size:17px !important; max-width:none !important; }
+    #maison [data-mz-head]{ display:flex !important; flex-wrap:wrap; justify-content:space-between; gap:8px 16px !important; }
+    #maison [data-mz-head] p{ white-space:nowrap; }
     #newsletter{ padding-top:80px !important; padding-bottom:70px !important; }
     #newsletter h2{ font-size:15vw !important; margin-bottom:24px !important; }
-    div[style*="z-index:200"] > div[style*="grid-template-columns:1.1fr"]{ grid-template-columns:1fr !important; }
-    div[style*="z-index:200"] div[style*="height:calc(100vh - 66px)"]{ position:relative !important; height:78vw !important; top:auto !important; padding:0 !important; }
-    div[style*="z-index:200"] div[style*="top:72px"]{ position:relative !important; top:auto !important; padding:32px 20px 56px !important; }
-    div[style*="z-index:200"] h2[style*="font-size:36px"]{ font-size:26px !important; }
+    #newsletter p{ font-size:13px !important; margin-bottom:32px !important; }
+    #newsletter div[data-reveal] > div{ margin-top:56px !important; gap:16px !important; }
+    footer{ padding:40px 20px 48px !important; flex-direction:column !important; align-items:flex-start !important; gap:24px !important; letter-spacing:.16em !important; }
+    footer > div{ flex-direction:column !important; align-items:flex-start !important; gap:2px !important; }
+    footer > div > a{ padding:8px 0; }
+    footer span[aria-hidden]{ display:none !important; }
+    /* Product detail overlay */
+    [data-detail-bar]{ padding:10px 12px 10px 16px !important; }
+    [data-detail-bar] > div{ gap:4px !important; }
+    [data-detail-bar] button{ min-width:44px; min-height:44px; }
+    [data-detail-grid]{ grid-template-columns:minmax(0,1fr) !important; }
+    [data-detail-media]{ position:relative !important; top:auto !important; height:auto !important; padding:16px 20px 0 !important; display:block !important; }
+    [data-detail-frame]{ width:100% !important; touch-action:pan-y; }
+    [data-detail-frame] > button[aria-label="Previous"], [data-detail-frame] > button[aria-label="Next"]{ width:40px !important; height:40px !important; }
+    [data-detail-frame] > button[aria-label="Previous"]{ left:10px !important; }
+    [data-detail-frame] > button[aria-label="Next"]{ right:10px !important; }
+    [data-detail-frame] > button[aria-label="Zoom"]{ top:10px !important; right:10px !important; }
+    [data-detail-frame] > div:last-child button{ width:8px !important; height:8px !important; }
+    [data-detail-info]{ position:static !important; padding:28px 20px 64px !important; gap:28px !important; }
+    [data-detail-title]{ font-size:26px !important; line-height:1.1 !important; }
+    [data-detail-info] [data-size-btn]{ flex:1 1 0; min-width:0 !important; }
+    /* Bag drawer */
+    aside[role="dialog"] > div:first-child{ padding:12px 12px 12px 20px !important; }
+    aside[role="dialog"] button[aria-label="Close"]{ width:44px; height:44px; }
+    aside[role="dialog"] > div{ padding-left:20px !important; padding-right:20px !important; }
+    aside[role="dialog"] > div:last-child{ padding-bottom:calc(20px + env(safe-area-inset-bottom)) !important; }
+    [data-cart-qty] button{ width:40px; height:40px; }
+    [data-cart-link]{ padding:10px 0; }
   }
 </style>
 </helmet>
@@ -178,13 +212,13 @@
       <h2 style="font-size:13px; letter-spacing:.28em; text-transform:uppercase; font-weight:500; color:#16140F;">Collection</h2>
       <span style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#7C766A;"><br></span>
     </div>
-    <div style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(2,1fr); gap:32px 32px; row-gap:64px;">
+    <div data-prod-grid="" style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(2,1fr); gap:32px 32px; row-gap:64px;">
       <sc-for list="{{ products }}" as="p" hint-placeholder-count="6">
         <article data-reveal="" style="cursor:pointer; width:min(100%, calc((100svh - 170px) * 0.8)); justify-self:center;" sc-camel-on-click="{{ p.open }}">
           <div style="background:#E7E2D7; aspect-ratio:4/5;">
             <x-import component-from-global-scope="image-slot" from="assets/js/vendor/image-slot.js" id="{{ p.slot }}" src="{{ p.src }}" shape="rect" placeholder="{{ p.name }}" style="width:100%; height:100%;" hint-size="100%,100%"></x-import>
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin-top:18px;">
+          <div data-card-meta="" style="display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin-top:18px;">
             <h3 data-cardtext="" style="font-size:15px; font-weight:500; letter-spacing:.01em; outline:none; cursor:inherit;">{{ p.name }}</h3>
             <span data-cardtext="" style="font-size:13px; color:#7C766A; outline:none; white-space:nowrap; flex:none; cursor:inherit;">{{ p.price }}</span>
           </div>
@@ -198,13 +232,13 @@
       <h2 style="font-size:13px; letter-spacing:.28em; text-transform:uppercase; font-weight:500; color:#16140F;">Accessories</h2>
       <span style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#7C766A;">Six pieces</span>
     </div>
-    <div style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(2,1fr); gap:32px 32px; row-gap:64px;">
+    <div data-prod-grid="" style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(2,1fr); gap:32px 32px; row-gap:64px;">
       <sc-for list="{{ accessories }}" as="p" hint-placeholder-count="6">
         <article data-reveal="" style="cursor:pointer; width:min(100%, calc((100svh - 170px) * 0.8)); justify-self:center;" sc-camel-on-click="{{ p.open }}">
           <div style="background:#E7E2D7; aspect-ratio:4/5;">
             <x-import component-from-global-scope="image-slot" from="assets/js/vendor/image-slot.js" id="{{ p.slot }}" src="{{ p.src }}" shape="rect" placeholder="{{ p.name }}" style="width:100%; height:100%;" hint-size="100%,100%"></x-import>
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin-top:18px;">
+          <div data-card-meta="" style="display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin-top:18px;">
             <h3 data-cardtext="" style="font-size:15px; font-weight:500; letter-spacing:.01em; outline:none; cursor:inherit;">{{ p.name }}</h3>
             <span data-cardtext="" style="font-size:13px; color:#7C766A; outline:none; white-space:nowrap; flex:none; cursor:inherit;">{{ p.price }}</span>
           </div>
@@ -291,7 +325,7 @@
   <section id="maison" style="padding:120px 40px;">
     <div style="max-width:1200px; margin:0 auto;">
 
-      <div data-reveal="" style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:24px; padding:14px 0;">
+      <div data-reveal="" data-mz-head="" style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:24px; padding:14px 0;">
         <p style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; font-weight:500; color:#16140F; margin:0;">The Maison</p>
         <p style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; font-weight:500; color:#16140F; margin:0;">Issue No. 01</p>
         <p style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; font-weight:500; color:#16140F; margin:0; text-align:right;">Fall / Winter 2026</p>
@@ -346,8 +380,8 @@
   </footer>
 
   <sc-if value="{{ detail }}" hint-placeholder-val="{{ false }}">
-    <div style="position:fixed; inset:0; z-index:200; background:#ffffff; overflow-y:auto;">
-      <div style="position:sticky; top:0; z-index:5; display:flex; justify-content:space-between; align-items:center; padding:22px 40px; background:rgba(255,255,255,.9); backdrop-filter:blur(8px); border-bottom:1px solid #ECE7DD;">
+    <div data-detail="" style="position:fixed; inset:0; z-index:200; background:#ffffff; overflow-y:auto;">
+      <div data-detail-bar="" style="position:sticky; top:0; z-index:5; display:flex; justify-content:space-between; align-items:center; padding:22px 40px; background:rgba(255,255,255,.9); backdrop-filter:blur(8px); border-bottom:1px solid #ECE7DD;">
         <button sc-camel-on-click="{{ closeDetail }}" aria-label="Zurück" style="background:none; border:none; cursor:pointer; font-size:20px; line-height:1; font-weight:400; color:#16140F; padding:4px 8px 4px 0;">←</button>
         <span style="font-size:11px; letter-spacing:.22em; font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:600; text-transform:none; color:#16140F;">FOEDUS&nbsp;PARA<span style="letter-spacing:0; font-weight:670;">j</span></span>
         <div style="display:flex; align-items:center; gap:28px;">
@@ -356,9 +390,9 @@
         </div>
       </div>
 
-      <div style="display:grid; grid-template-columns:1.1fr .9fr; align-items:start;">
-        <div style="position:sticky; top:66px; height:calc(100vh - 66px); padding:16px; display:flex; align-items:center; justify-content:center;">
-          <div sc-camel-on-click="{{ galleryClick }}" style="position:relative; width:min(100%, calc((100vh - 98px) * 0.8)); aspect-ratio:4/5; background:#E7E2D7; cursor:zoom-in;">
+      <div data-detail-grid="" style="display:grid; grid-template-columns:1.1fr .9fr; align-items:start;">
+        <div data-detail-media="" style="position:sticky; top:66px; height:calc(100vh - 66px); padding:16px; display:flex; align-items:center; justify-content:center;">
+          <div data-detail-frame="" sc-camel-on-click="{{ galleryClick }}" sc-camel-on-touch-start="{{ galleryTouchStart }}" sc-camel-on-touch-end="{{ galleryTouchEnd }}" style="position:relative; width:min(100%, calc((100vh - 98px) * 0.8)); aspect-ratio:4/5; background:#E7E2D7; cursor:zoom-in;">
             <sc-for list="{{ allGalleries }}" as="gal" hint-placeholder-count="1">
               <div style="position:absolute; inset:0; display:{{ gal.display }};">
                 <sc-for list="{{ gal.images }}" as="img" hint-placeholder-count="5">
@@ -381,11 +415,11 @@
           </div>
         </div>
 
-        <div style="position:sticky; top:72px; padding:56px 56px 80px; display:flex; flex-direction:column; gap:32px;">
+        <div data-detail-info="" style="position:sticky; top:72px; padding:56px 56px 80px; display:flex; flex-direction:column; gap:32px;">
           <div>
             <p style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:#9a9485; margin-bottom:16px; outline:none;">{{ ui.collection }}</p>
             
-            <h2 style="font-size:36px; font-weight:500; letter-spacing:-.02em; line-height:1.05; outline:none; cursor:inherit;">{{ detail.name }}</h2><p style="font-size:20px; color:#16140F; margin-top:16px; outline:none; cursor:inherit;">{{ detail.price }}</p>
+            <h2 data-detail-title="" style="font-size:36px; font-weight:500; letter-spacing:-.02em; line-height:1.05; outline:none; cursor:inherit;">{{ detail.name }}</h2><p style="font-size:20px; color:#16140F; margin-top:16px; outline:none; cursor:inherit;">{{ detail.price }}</p>
           </div>
 
           <sc-if value="{{ hasSizes }}" hint-placeholder-val="{{ true }}">
@@ -393,7 +427,7 @@
             <p style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#7C766A; margin-bottom:14px; outline:none;">{{ ui.size }}</p>
             <div style="display:flex; flex-wrap:wrap; gap:10px;">
               <sc-for list="{{ sizes }}" as="s" hint-placeholder-count="5">
-                <button sc-camel-on-click="{{ s.select }}" aria-label="{{ s.disabledLabel }}" style="min-width:56px; padding:14px 12px; border:1px solid {{ s.border }}; background:{{ s.bg }}; color:{{ s.color }}; text-decoration:{{ s.deco }}; font-family:inherit; font-size:13px; letter-spacing:.05em; cursor:{{ s.cursor }}; transition:all .2s;">{{ s.label }}</button>
+                <button data-size-btn="" sc-camel-on-click="{{ s.select }}" aria-label="{{ s.disabledLabel }}" style="min-width:56px; padding:14px 12px; border:1px solid {{ s.border }}; background:{{ s.bg }}; color:{{ s.color }}; text-decoration:{{ s.deco }}; font-family:inherit; font-size:13px; letter-spacing:.05em; cursor:{{ s.cursor }}; transition:all .2s;">{{ s.label }}</button>
               </sc-for>
             </div>
           </div>
