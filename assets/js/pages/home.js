@@ -334,7 +334,9 @@ class Component extends DCLogic {
         qty: l.qty,
         cur, total: unit * l.qty,
         lineTotal: this._money(unit * l.qty, cur),
-        thumb: src ? 'url("' + src + '")' : "none",
+        // Thumbnail = the product's first gallery image: same <image-slot> id, so it uses the same file and crop.
+        slot: l.slot,
+        src,
         dec: () => this._setQty(idx, l.qty - 1),
         inc: () => this._setQty(idx, l.qty + 1),
         remove: () => this._setQty(idx, 0),
