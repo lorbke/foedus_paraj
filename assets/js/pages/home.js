@@ -11,6 +11,18 @@ customElements.whenDefined("image-slot").then(() => {
   P._applyView = function () { try { this._clampView(); } catch (e) {} return apply.apply(this, arguments); };
   P._fpClampPatched = true;
 });
+// Lookbook image slot -> products worn in that look (product slots from `state.products` / `state.accessories`).
+// Clicking a look's image opens the first product; looks with several products also list them under the caption.
+// Looks not listed here are not clickable.
+const LOOK_PRODUCTS = {
+  "a-look1": ["a-prod3"],              // Shadow coat
+  "a-look5": ["a-prod6"],              // Draping flesh top
+  "a-look7": ["a-prod1", "a-prod8"],   // Reptile jacket contoured cut + reptile trousers
+  "a-look8": ["a-prod2", "a-prod12"],  // Reptile jacket relaxed cut + reptile hand cuffs
+  "a-look9": ["a-prod7", "a-prod9"],   // Split neck top + obsidian armor trousers
+  "a-look10": ["a-prod2", "a-prod8"],  // Reptile jacket relaxed cut + reptile trousers
+  "a-look14": ["a-prod3"],             // Shadow coat
+};
 const PRODUCT_IMAGES = {"a-prod1":"assets/images/a-prod1.webp","a-prod2":"assets/images/a-prod2.webp","a-prod3":"assets/images/a-prod3-f.webp","a-prod4":"assets/images/a-prod4-f.webp","a-prod5":"assets/images/a-prod5-v1-1792601583101.webp","a-prod6":"assets/images/a-prod6-f.webp","a-prod7":"assets/images/a-prod7-f.webp","a-prod8":"assets/images/a-prod8-main.webp","a-prod9":"assets/images/a-prod9-f.webp","a-prod10":"assets/images/a-prod10-f.webp","a-prod11":"assets/images/a-prod11-f.webp"};
 
 class Component extends DCLogic {
@@ -361,6 +373,31 @@ class Component extends DCLogic {
     };
   }
 
+  _openSlot(slot) {
+    for (const g of ["products", "accessories"]) {
+      const i = this.state[g].findIndex((p) => p.slot === slot);
+      if (i < 0) continue;
+      this._detailY = window.scrollY;
+      this.setState({ detailIndex: i, detailGroup: g, selectedSize: null, cartLabel: "Add to cart", openPanel: 0, imageIndex: 0 });
+      return;
+    }
+  }
+  // Template values per look, keyed "l1".."l14" (template paths can't contain "-").
+  _lookLinks() {
+    const out = {};
+    for (let n = 1; n <= 14; n++) {
+      const all = [...this.state.products, ...this.state.accessories];
+      const items = (LOOK_PRODUCTS["a-look" + n] || []).map((slot) => all.find((p) => p.slot === slot)).filter(Boolean)
+        .map((p) => ({ name: this._ov(p).name, open: (e) => { if (e) e.stopPropagation(); this._openSlot(p.slot); } }));
+      out["l" + n] = {
+        open: items.length ? items[0].open : () => {},
+        cursor: items.length ? "pointer" : "default",
+        multi: items.length > 1,
+        items,
+      };
+    }
+    return out;
+  }
   _ui(k, d) { const u = ((this.state.texts || {})._ui) || {}; return u[k] != null && u[k] !== "" ? u[k] : d; }
   _ov(p) {
     const r = this._ovText(p);
@@ -453,6 +490,7 @@ class Component extends DCLogic {
         src: this._srcOf(p.slot),
         open: () => { this._detailY = window.scrollY; this.setState({ detailIndex: i, detailGroup: "accessories", selectedSize: null, cartLabel: "Add to cart", openPanel: 0, imageIndex: 0 }); },
       })),
+      lk: this._lookLinks(),
       detail: this.state.detailIndex == null ? null : this._ov(this.state[this.state.detailGroup][this.state.detailIndex]),
       detailImages: this.state.detailIndex == null ? [] : (() => {
         const p = this.state[this.state.detailGroup][this.state.detailIndex];

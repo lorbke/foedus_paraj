@@ -43,6 +43,9 @@ Headless Chrome works: launch Chrome with `--remote-debugging-port` and drive it
   over the hard-coded state. **Price is then overridden by the live Shopify price** once the catalog has loaded.
 - Known content gap: `products.json` has a `description` only for `prod1`. All other products fall back to old
   template placeholder text (e.g. the pencil skirt is described as "cashmere knit"). Real texts are pending from the owner.
+- Lookbook → product links: the `LOOK_PRODUCTS` map at the top of `home.js` (look slot → product slots, first one
+  opens on image click). Unmapped looks are not clickable. Multi-product looks show links as hover chips on desktop
+  (`data-look-overlay`) and as a row under the caption on phones (`data-look-shop`).
 - Product thumbnails: the `PRODUCT_IMAGES` map at the top of `home.js`. Gallery images: `content/images.json`.
 - `images.json` crops (`s`/`x`/`y`) are saved for one frame shape and must be clamped for others. The vendor `<image-slot>`
   skips that clamp on image load, so `home.js` patches `_applyView` to clamp first (top of file). Keep that patch.
