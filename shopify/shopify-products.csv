@@ -1,0 +1,34 @@
+Handle,Title,Body (HTML),Vendor,Product Category,Type,Tags,Published,Option1 Name,Option1 Value,Variant SKU,Variant Grams,Variant Inventory Tracker,Variant Inventory Qty,Variant Inventory Policy,Variant Fulfillment Service,Variant Price,Variant Compare At Price,Variant Requires Shipping,Variant Taxable,Image Src,Image Position,Image Alt Text,Gift Card,SEO Title,SEO Description,Status
+reptile-jacket-in-contoured-cut,REPTILE JACKET IN CONTOURED CUT,"<p>A sharply contoured jacket with a feminine line, cut from heavy Swiss denim and panelled in crocodile-embossed nappa leather. The high collar is lined in nappa, so it sits soft against the neck, and closes with a signature lock fastening that gives the piece its own character. Buttoned cuffs open at the wrist, and a concealed zip pocket on the inside keeps cash and personal essentials out of sight. Lined in royal purple. Worn with the matching trousers, it reads as a classy uniform with an avant-garde touch.</p><p><strong>Material:</strong> Swiss-Denim, Swiss-Embossed Nappa Leather</p>",FOEDUS PARAJ,,Clothing,"Collection No. 01, prod1",TRUE,Size,Size 1,FP-P01-S1,,,,continue,manual,490,,TRUE,TRUE,,,,FALSE,,,draft
+reptile-jacket-in-contoured-cut,,,,,,,,,Size 2,FP-P01-S2,,,,continue,manual,490,,TRUE,TRUE,,,,,,,
+reptile-jacket-in-contoured-cut,,,,,,,,,Size 3,FP-P01-S3,,,,continue,manual,490,,TRUE,TRUE,,,,,,,
+reptile-jacket-in-relaxed-cut,REPTILE JACKET IN RELAXED CUT,"<p><strong>Material:</strong> Swiss-Denim, Swiss-Embossed Nappa Leather</p>",FOEDUS PARAJ,,Clothing,"Collection No. 01, prod2",TRUE,Size,Size 1,FP-P02-S1,,,,continue,manual,490,,TRUE,TRUE,,,,FALSE,,,draft
+reptile-jacket-in-relaxed-cut,,,,,,,,,Size 2,FP-P02-S2,,,,continue,manual,490,,TRUE,TRUE,,,,,,,
+reptile-jacket-in-relaxed-cut,,,,,,,,,Size 3,FP-P02-S3,,,,continue,manual,490,,TRUE,TRUE,,,,,,,
+reptile-tailored-vest,REPTILE TAILORED VEST,"<p><strong>Material:</strong> Swiss-Denim, Swiss-Embossed Nappa Leather</p>",FOEDUS PARAJ,,Clothing,"Collection No. 01, prod13",TRUE,Size,Size 1,FP-P13-S1,,,,continue,manual,190,,TRUE,TRUE,,,,FALSE,,,draft
+reptile-tailored-vest,,,,,,,,,Size 2,FP-P13-S2,,,,continue,manual,190,,TRUE,TRUE,,,,,,,
+reptile-tailored-vest,,,,,,,,,Size 3,FP-P13-S3,,,,continue,manual,190,,TRUE,TRUE,,,,,,,
+reptile-trousers,REPTILE TROUSERS,"<p><strong>Material:</strong> Swiss-Denim, Swiss-Embossed Nappa Leather</p>",FOEDUS PARAJ,,Clothing,"Collection No. 01, prod8",TRUE,Size,Size 1,FP-P08-S1,,,,continue,manual,290,,TRUE,TRUE,,,,FALSE,,,draft
+reptile-trousers,,,,,,,,,Size 2,FP-P08-S2,,,,continue,manual,290,,TRUE,TRUE,,,,,,,
+reptile-trousers,,,,,,,,,Size 3,FP-P08-S3,,,,continue,manual,290,,TRUE,TRUE,,,,,,,
+shadow-coat,SHADOW COAT,"<p><strong>Material:</strong> Virgin Wool, Leather Buttons</p>",FOEDUS PARAJ,,Clothing,"Collection No. 01, prod3",TRUE,Size,Size 1,FP-P03-S1,,,,continue,manual,790,,TRUE,TRUE,,,,FALSE,,,draft
+shadow-coat,,,,,,,,,Size 2,FP-P03-S2,,,,continue,manual,790,,TRUE,TRUE,,,,,,,
+shadow-coat,,,,,,,,,Size 3,FP-P03-S3,,,,continue,manual,790,,TRUE,TRUE,,,,,,,
+obsidian-armor-trousers,OBSIDIAN ARMOR TROUSERS,<p><strong>Material:</strong> Premium Viskose</p>,FOEDUS PARAJ,,Clothing,"Collection No. 01, prod9",TRUE,Size,Size 1,FP-P09-S1,,,,continue,manual,390,,TRUE,TRUE,,,,FALSE,,,draft
+obsidian-armor-trousers,,,,,,,,,Size 2,FP-P09-S2,,,,continue,manual,390,,TRUE,TRUE,,,,,,,
+obsidian-armor-trousers,,,,,,,,,Size 3,FP-P09-S3,,,,continue,manual,390,,TRUE,TRUE,,,,,,,
+dark-night-blazer,DARK NIGHT BLAZER,"<p><strong>Material:</strong> Swiss-Denim, Swiss-Nappa Leather</p>",FOEDUS PARAJ,,Clothing,"Collection No. 01, prod4",TRUE,Size,Size 1,FP-P04-S1,,,,continue,manual,490,,TRUE,TRUE,,,,FALSE,,,draft
+dark-night-blazer,,,,,,,,,Size 2,FP-P04-S2,,,,continue,manual,490,,TRUE,TRUE,,,,,,,
+dark-night-blazer,,,,,,,,,Size 3,FP-P04-S3,,,,continue,manual,490,,TRUE,TRUE,,,,,,,
+dark-night-pencil-skirt,DARK NIGHT PENCIL SKIRT,"<p><strong>Material:</strong> Swiss-Denim, Swiss-Nappa Leather</p>",FOEDUS PARAJ,,Clothing,"Collection No. 01, prod5",TRUE,Size,Size 1,FP-P05-S1,,,,continue,manual,290,,TRUE,TRUE,,,,FALSE,,,draft
+dark-night-pencil-skirt,,,,,,,,,Size 2,FP-P05-S2,,,,continue,manual,290,,TRUE,TRUE,,,,,,,
+dark-night-pencil-skirt,,,,,,,,,Size 3,FP-P05-S3,,,,continue,manual,290,,TRUE,TRUE,,,,,,,
+draping-flesh-top,DRAPING FLESH TOP,<p><strong>Material:</strong> Bio Bamboo</p>,FOEDUS PARAJ,,Clothing,"Collection No. 01, prod6",TRUE,Size,Size 1,FP-P06-S1,,,,continue,manual,190,,TRUE,TRUE,,,,FALSE,,,draft
+draping-flesh-top,,,,,,,,,Size 2,FP-P06-S2,,,,continue,manual,190,,TRUE,TRUE,,,,,,,
+draping-flesh-top,,,,,,,,,Size 3,FP-P06-S3,,,,continue,manual,190,,TRUE,TRUE,,,,,,,
+split-neck-top,SPLIT NECK TOP,<p><strong>Material:</strong> Bio Bamboo</p>,FOEDUS PARAJ,,Clothing,"Collection No. 01, prod7",TRUE,Size,Size 1,FP-P07-S1,,,,continue,manual,150,,TRUE,TRUE,,,,FALSE,,,draft
+split-neck-top,,,,,,,,,Size 2,FP-P07-S2,,,,continue,manual,150,,TRUE,TRUE,,,,,,,
+split-neck-top,,,,,,,,,Size 3,FP-P07-S3,,,,continue,manual,150,,TRUE,TRUE,,,,,,,
+reptile-body-bag,REPTILE BODY BAG,"<p><strong>Material:</strong> Plain-Nappa Leather, Embossed Nappa Leather</p>",FOEDUS PARAJ,,Accessories,"Collection No. 01, prod10",TRUE,Size,One size,FP-P10-OS,,,,continue,manual,290,,TRUE,TRUE,,,,FALSE,,,draft
+bloody-corpse-clutch,BLOODY CORPSE CLUTCH,,FOEDUS PARAJ,,Accessories,"Collection No. 01, prod11",TRUE,Size,One size,FP-P11-OS,,,,continue,manual,390,,TRUE,TRUE,,,,FALSE,,,draft
+reptile-hand-cuffs,REPTILE HAND CUFFS,<p><strong>Material:</strong> Swiss-Embossed Nappa Leather</p>,FOEDUS PARAJ,,Accessories,"Collection No. 01, prod12",TRUE,Size,One size,FP-P12-OS,,,,continue,manual,90,,TRUE,TRUE,,,,FALSE,,,draft

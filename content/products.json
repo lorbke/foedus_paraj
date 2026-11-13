@@ -1,0 +1,68 @@
+{
+  "prod1": {
+    "name": "REPTILE JACKET IN CONTOURED CUT",
+    "material": "SWISS-DENIM, SWISS-EMBOSSED NAPPA LEATHER",
+    "price": "CHF 490",
+    "description": "A sharply contoured jacket with a feminine line, cut from heavy Swiss denim and panelled in crocodile-embossed nappa leather. The high collar is lined in nappa, so it sits soft against the neck, and closes with a signature lock fastening that gives the piece its own character. Buttoned cuffs open at the wrist, and a concealed zip pocket on the inside keeps cash and personal essentials out of sight. Lined in royal purple. Worn with the matching trousers, it reads as a classy uniform with an avant-garde touch.",
+    "fit": "FOEDUS PARAJ does not work with regular sizing. Each size is developed around the proportions of the human body, so that a single size fits a range of body types rather than one standard figure\n\nModel is 1,75 cm and wears a size 2. \nSize 1: 1,60-1,70\nSize 2:\nSize3:"
+  },
+  "prod5": {
+    "name": "DARK NIGHT PENCIL SKIRT",
+    "price": "CHF 290",
+    "material": "SWISS-DENIM, SWISS-NAPPA LEATHER"
+  },
+  "prod4": {
+    "name": "Dark night -blazer",
+    "price": "CHF 490",
+    "material": "SWISS-DENIM, SWISS-NAPPA LEATHER"
+  },
+  "prod3": {
+    "name": "Shadow - Coat",
+    "price": "CHF 790",
+    "material": "VIRGIN WOOL, LEATHER BUTTONS"
+  },
+  "prod6": {
+    "name": "Draping flesh - Top",
+    "price": "CHF 190",
+    "material": "BIO BAMBOO"
+  },
+  "prod2": {
+    "price": "CHF 490",
+    "material": "SWISS-DENIM, SWISS-EMBOSSED NAPPA LEATHER",
+    "name": "REPTILE JACKET IN RELAXED CUT"
+  },
+  "prod8": {
+    "name": "Reptile - Trousers",
+    "price": "CHF 290",
+    "material": "SWISS-DENIM, SWISS-EMBOSSED NAPPA LEATHER"
+  },
+  "prod7": {
+    "name": "Split neck - Top",
+    "price": "CHF 150",
+    "material": "BIO BAMBOO"
+  },
+  "prod9": {
+    "material": "PREMIUM VISKOSE",
+    "name": "OBSIDIAN ARMOR TROUSERS",
+    "price": "CHF 390"
+  },
+  "prod10": {
+    "name": "Reptile body bag",
+    "material": "PLAIN-NAPPA LEATHER, EMBOSSED NAPPA LEATHER",
+    "price": "CHF 290"
+  },
+  "prod11": {
+    "name": "Bloody corpse clutch",
+    "price": "CHF 390"
+  },
+  "prod12": {
+    "name": "REPTILE HAND CUFFS",
+    "price": "CHF 90",
+    "material": "SWISS-EMBOSSED NAPPA LEATHER"
+  },
+  "prod13": {
+    "name": "REPTILE TAILORED VEST",
+    "price": "CHF 190",
+    "material": "SWISS-DENIM, SWISS-EMBOSSED NAPPA LEATHER"
+  }
+}

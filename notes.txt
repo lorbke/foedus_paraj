@@ -1,0 +1,18 @@
+Todos in Shopify Shop
+
+- change store name
+- set store domain
+- add headless, get storefront api access token and domain
+- add swiss company entity
+- switch currency to CHF
+- Taxes: Swiss VAT, plus EU VAT if you sell into the EU.
+- Legal texts in checkout: AGB, withdrawal (Widerruf) and privacy (Datenschutz) policies.
+- Order notification emails: add the owners' addresses so they get an email for each order.
+- Payments: set up Shopify Payments and/or PayPal.
+	- Test mode: turn on Shopify Payments test mode (or Shopify's "Bogus Gateway") so we can place test orders.
+		- at the top: see all other providers -> type "bogus gateway"
+- import products
+- set products active
+- include products in headless channel
+- select plan and remove store password
+- insert backlinks from checkout to the main website (e.g., "Back to main site" link)
